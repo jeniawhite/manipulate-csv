@@ -71,7 +71,10 @@ class ManipulateCSV {
             });
 
             // Scope for the invoked operations
-            let scope = {};
+            let scope = {
+                // Scanning row number of set
+                row_number: 0
+            };
             // Promise for the writer to the destination csv
             let writer_promise;
 
@@ -79,6 +82,7 @@ class ManipulateCSV {
             reader.on('readable', async function() {
                 // While there are rows to read
                 while (scope.input = reader.read()) {
+                    scope.row_number += 1
                     // Make sure that the writer finished writing
                     if (writer_promise) await writer_promise;
                     // Invoke the operation
@@ -142,7 +146,7 @@ class ManipulateCSV {
     avg() {
         const input_value = this.input && this.input[0];
         if (_.isNumber(input_value)) {
-            this.output = this.output ? [(this.output[0] + input_value) / 2] : [input_value];
+            this.output = this.output ? [((scope.row_number - 1) * this.output[0] + input_value)) / row_number] : [input_value / row_number];
         }
         return this;
     }
